@@ -1,3 +1,4 @@
+import { Menu } from '@/components/admin-panel/menu'
 import { Button } from '@/components/ui/button'
 import { useSidebarToggle } from '@/hooks/useStore'
 import { cn } from '@/lib/utils'
@@ -57,7 +58,7 @@ export function Sidebar() {
             </h1>
           </Link>
         </Button>
-        {/* <Menu isOpen={sidebar?.isOpen} /> */}
+        <Menu />
       </div>
     </aside>
   )

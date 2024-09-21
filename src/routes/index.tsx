@@ -10,6 +10,7 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<Root />}>
       <Route index element={<HomePage />} />
+      <Route path='hehe' element={<div>Hehe</div>} />
     </Route>
   )
 )

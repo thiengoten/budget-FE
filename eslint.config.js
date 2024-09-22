@@ -35,7 +35,7 @@ export default tseslint.config({
         argsIgnorePattern: '^_',
       },
     ],
-    '@typescript-eslint/no-explicit-any': 'warn',
+    '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-unused-vars': [
       'warn',
       {
@@ -48,5 +48,6 @@ export default tseslint.config({
         ignoreRestSiblings: true,
       },
     ],
+    '@typescript-eslint/no-empty-object-type': 'warn',
   },
 })

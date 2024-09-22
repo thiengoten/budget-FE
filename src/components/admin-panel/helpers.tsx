@@ -1,3 +1,4 @@
+import { Paths } from '@/config/paths'
 import {
   BoltIcon,
   CircleDollarSignIcon,
@@ -13,7 +14,7 @@ export function getMenuList(pathname: string) {
       menus: [
         {
           label: 'Overview',
-          href: '/admin/dashboard',
+          href: Paths.root,
           icon: LayoutGridIcon,
           active: pathname === '/admin/dashboard',
         },

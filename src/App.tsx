@@ -1,5 +1,6 @@
 import router from '@/routes'
 import { RouterProvider } from 'react-router-dom'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 
 function App() {
   // useEffect(() => {
@@ -12,6 +13,7 @@ function App() {
   return (
     <>
       <RouterProvider router={router} />
+      <SpeedInsights />
     </>
   )
 }

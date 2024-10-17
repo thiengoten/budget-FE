@@ -21,28 +21,43 @@ import {
 } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { toast } from '@/components/hooks/use-toast'
+import { useUploadImage } from '@/queries/useUploadImage'
 import Dropzone from '@/components/Dropzone'
+import { useCreateBudget } from '@/queries/useCreateBudget'
+
+const formSchema = z.object({
+  action: z.string(),
+  amount: z.string(),
+  image: z.instanceof(File).nullable(),
+})
+
+type FormValues = z.infer<typeof formSchema>
 
 export default function HomePage() {
-  const formSchema = z.object({
-    action: z.string(),
-    amount: z.string(),
-    image: z.string(),
+  const { uploadData, onUploadImage } = useUploadImage({
+    retry: 2,
   })
-
-  const form = useForm<z.infer<typeof formSchema>>({
+  const { onCreateBudget: _ } = useCreateBudget()
+  console.log('🚀 ~ HomePage ~ uploadData:', uploadData?.data)
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      action: '',
       amount: '',
+      image: null,
     },
   })
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
+  function onSubmit(data: FormValues) {
+    if (data.image) {
+      onUploadImage(data.image)
+    }
+
     toast({
       title: 'You submitted the following values:',
       description: (
         <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
-          <code className='text-white'>{JSON.stringify(data, null, 2)}</code>
+          <code className='text-white'>{JSON.stringify(data, null, 1)}</code>
         </pre>
       ),
     })
@@ -95,7 +110,8 @@ export default function HomePage() {
             <FormItem>
               <FormLabel>Image</FormLabel>
               <FormControl>
-                <Dropzone {...field} />
+                {/* <DragAndDropImage onImageUpload={field.onChange} /> */}
+                <Dropzone onImageUpload={field.onChange} />
               </FormControl>
               <FormMessage />
             </FormItem>

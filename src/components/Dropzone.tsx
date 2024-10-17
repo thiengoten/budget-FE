@@ -3,15 +3,10 @@ import { File, Upload } from 'lucide-react'
 import { useCallback, useState } from 'react'
 
 type DropzoneProps = {
-  onChange: (...event: any[]) => void
-  onBlur: () => void
-  value: string
-  disabled?: boolean
-  name: string
-  ref: React.RefCallback<HTMLInputElement>
+  onImageUpload: (file: File) => void
 }
 
-export default function Dropzone(props: DropzoneProps) {
+export default function Dropzone({ onImageUpload }: DropzoneProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [isDragging, setIsDragging] = useState(false)
 
@@ -22,6 +17,7 @@ export default function Dropzone(props: DropzoneProps) {
         setPreviewUrl(reader.result as string)
       }
       reader.readAsDataURL(file)
+      onImageUpload(file)
     } else {
       alert('Please upload an image file.')
     }

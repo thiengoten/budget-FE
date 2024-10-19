@@ -54,10 +54,12 @@ export function Sidebar() {
                   : 'translate-x-0 opacity-100'
               )}
             >
-              Brand
+              Bubgev
             </h1>
           </Link>
         </Button>
+
+        {/* Menu */}
         <Menu />
       </div>
     </aside>

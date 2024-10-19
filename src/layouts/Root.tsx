@@ -1,4 +1,5 @@
 import { Sidebar } from '@/components/admin-panel/sidebar'
+import { Toaster } from '@/components/ui/toaster'
 import { useSidebarToggle } from '@/hooks/useStore'
 import { cn } from '@/lib/utils'
 import { Outlet } from 'react-router-dom'
@@ -26,6 +27,7 @@ export default function Root() {
       >
         {/* <Footer /> */}
       </footer>
+      <Toaster />
     </>
   )
 }

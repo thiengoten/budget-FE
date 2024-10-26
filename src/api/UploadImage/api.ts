@@ -9,6 +9,7 @@ import {
 export const uploadImage = async (
   data: File
 ): Promise<DataResponse<CloudinaryUploadResponse> | any> => {
+  console.log('🚀 ~ data:', data)
   return await axiosInstance.post(
     `${BASE_URL}/upload`,
     {

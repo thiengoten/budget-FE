@@ -20,13 +20,14 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
-import { toast } from '@/components/hooks/use-toast'
-import { useUploadImage } from '@/queries/useUploadImage'
 import Dropzone from '@/components/Dropzone'
+import { TYPE_OF_TRANSACTION } from '@/utils/constants'
+import { useUploadImage } from '@/queries/useUploadImage'
 import { useCreateBudget } from '@/queries/useCreateBudget'
+import { CreateBudgetPayload } from '@/types/apiType'
 
 const formSchema = z.object({
-  action: z.string(),
+  action: z.enum([TYPE_OF_TRANSACTION.INCOME, TYPE_OF_TRANSACTION.EXPENSE]),
   amount: z.string(),
   image: z.instanceof(File).nullable(),
 })
@@ -34,33 +35,36 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>
 
 export default function HomePage() {
-  const { uploadData, onUploadImage } = useUploadImage({
-    retry: 2,
+  const { onUploadImageAsync } = useUploadImage({
+    retry: 1,
   })
-  const { onCreateBudget: _ } = useCreateBudget()
-  console.log('🚀 ~ HomePage ~ uploadData:', uploadData?.data)
+
+  const { onCreateBudget } = useCreateBudget()
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      action: '',
+      action: TYPE_OF_TRANSACTION.INCOME,
       amount: '',
       image: null,
     },
   })
 
-  function onSubmit(data: FormValues) {
-    if (data.image) {
-      onUploadImage(data.image)
+  async function onSubmit(data: FormValues) {
+    const budgetData: CreateBudgetPayload = {
+      name: 'test',
+      typeOfTransaction: data.action,
+      amount: Number(data.amount),
     }
 
-    toast({
-      title: 'You submitted the following values:',
-      description: (
-        <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
-          <code className='text-white'>{JSON.stringify(data, null, 1)}</code>
-        </pre>
-      ),
-    })
+    if (data.image) {
+      const imageResponse = await onUploadImageAsync(data.image)
+      console.log('🚀 ~ onSubmit ~ imageResponse:', imageResponse)
+      budgetData.imageUrl = imageResponse?.data?.secure_url
+    }
+    console.log('🚀 ~ onSubmit ~ budgetData:', budgetData)
+
+    onCreateBudget(budgetData)
   }
 
   return (
@@ -73,14 +77,21 @@ export default function HomePage() {
             <FormItem>
               <FormLabel>Action</FormLabel>
               <FormControl>
-                <Select onValueChange={field.onChange}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={TYPE_OF_TRANSACTION.INCOME}
+                >
                   <SelectTrigger className='w-full'>
                     <SelectValue placeholder='Select action you want' />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectItem value='pay'>Pay</SelectItem>
-                      <SelectItem value='recive'>Recive</SelectItem>
+                      <SelectItem value={TYPE_OF_TRANSACTION.INCOME}>
+                        Income
+                      </SelectItem>
+                      <SelectItem value={TYPE_OF_TRANSACTION.EXPENSE}>
+                        Expense
+                      </SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>

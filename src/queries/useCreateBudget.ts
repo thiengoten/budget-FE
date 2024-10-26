@@ -1,4 +1,5 @@
 import { createBudget } from '@/api/Buddget'
+import { toast } from '@/components/hooks/use-toast'
 import { CreateBudgetPayload } from '@/types/apiType'
 import {
   useMutation,
@@ -14,7 +15,12 @@ export const useCreateBudget = (
     CreateBudgetPayload
   >
 ) => {
-  const { mutate: onCreateBudget, isPending: isCreating } = useMutation<
+  const {
+    data: budgetData,
+    mutate: onCreateBudget,
+    isPending: isCreating,
+    mutateAsync: onCreateBudgetAsync,
+  } = useMutation<
     AxiosResponse<CreateBudgetPayload>,
     DefaultError,
     CreateBudgetPayload
@@ -23,13 +29,23 @@ export const useCreateBudget = (
       console.log('🚀 ~ data:', data)
       return createBudget(data)
     },
-    onSuccess(data, variables, _context) {
-      console.log('🚀 ~ onSuccess ~ data:', data, variables)
+    onSuccess(_data, _variables, _context) {
+      toast({
+        title: 'Budget created successfully',
+        variant: 'success',
+      })
     },
     onError(error) {
-      console.error(error)
+      console.log('🚀 ~ error:', error)
+      toast({
+        title: 'Failed to create budget',
+        description: Array.isArray(error.message)
+          ? error.message.join(', ')
+          : error.message || 'An unexpected error occurred',
+        variant: 'destructive',
+      })
     },
     ...options,
   })
-  return { onCreateBudget, isCreating }
+  return { onCreateBudget, isCreating, budgetData, onCreateBudgetAsync }
 }

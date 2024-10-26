@@ -6,10 +6,13 @@ export const UploadImageFormDataKey = {
 
 //*Payload Types
 
+export type TransactionType = 'INCOME' | 'EXPENSE'
+
 export type CreateBudgetPayload = {
-  name?: string
-  action: string
-  amount: string
+  name: string
+  typeOfTransaction: TransactionType
+  amount: number
+  imageUrl?: string | null
   description?: string
 }
 
